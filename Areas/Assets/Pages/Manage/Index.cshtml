@@ -1,0 +1,37 @@
+@page
+@model AssetManagement.Areas.Assets.Pages.Manage.IndexModel
+
+<h1>Assets</h1>
+
+<p><a asp-area="Assets" asp-page="Create" class="btn btn-primary">Create New</a></p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Id</th><th>Type</th><th>Category</th><th>Cluster</th><th>Ownership</th>
+      <th>Province</th><th>Regency</th><th>District</th><th>Owner</th><th>Book Value</th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+  @foreach (var item in Model.Items)
+  {
+    <tr>
+      <td>@item.Id</td>
+      <td>@item.AssetType</td>
+      <td>@item.Category</td>
+      <td>@item.Cluster</td>
+      <td>@item.OwnershipType</td>
+      <td>@item.Province</td>
+      <td>@item.Regency</td>
+      <td>@item.District</td>
+      <td>@item.OwnerName</td>
+      <td>@item.ValueBook?.ToString("N2")</td>
+      <td>
+        <a asp-area="Assets" asp-page="Edit" asp-route-id="@item.Id">Edit</a> |
+        <a asp-area="Assets" asp-page="Details" asp-route-id="@item.Id">Details</a> |
+        <a asp-area="Assets" asp-page="Delete" asp-route-id="@item.Id">Delete</a>
+      </td>
+    </tr>
+  }
+  </tbody>
+</table>
