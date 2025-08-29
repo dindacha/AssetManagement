@@ -1,13 +1,22 @@
 @page "{id:int}"
 @model AssetManagement.Areas.Assets.Pages.Manage.DeleteModel
 
-<h1>Delete Asset</h1>
-<p>Are you sure you want to delete this asset?</p>
+<h3>Hapus Asset</h3>
+<p>Yakin mau menghapus data berikut?</p>
 
-<div><strong>@Model.Asset!.ZrefAssetType?.Name</strong> — @Model.Asset!.OwnerName</div>
+<dl class="row">
+  <dt class="col-sm-3">Id</dt><dd class="col-sm-9">@Model.Item.Id</dd>
+  <dt class="col-sm-3">Jenis</dt><dd class="col-sm-9">@Model.Item.Type</dd>
+  <dt class="col-sm-3">Cluster</dt><dd class="col-sm-9">@Model.Item.Cluster</dd>
+  <dt class="col-sm-3">Kategori</dt><dd class="col-sm-9">@Model.Item.Category</dd>
+  <dt class="col-sm-3">Desa</dt><dd class="col-sm-9">@Model.Item.Village</dd>
+  <dt class="col-sm-3">Cost Center</dt><dd class="col-sm-9">@Model.Item.CostCenter</dd>
+  <dt class="col-sm-3">SAP</dt><dd class="col-sm-9">@Model.Item.SapNumber</dd>
+  <dt class="col-sm-3">Luas (m²)</dt><dd class="col-sm-9">@Model.Item.AreaM2</dd>
+</dl>
 
 <form method="post">
-  <input type="hidden" asp-for="Asset!.Id" />
-  <button type="submit" class="btn btn-danger">Delete</button>
-  <a asp-area="Assets" asp-page="Index" class="btn btn-secondary">Cancel</a>
+  <input type="hidden" name="id" value="@Model.Item.Id" />
+  <button type="submit" class="btn btn-danger">Hapus</button>
+  <a asp-page="Index" class="btn btn-secondary">Batal</a>
 </form>

@@ -1,145 +1,117 @@
 @page "{id:int}"
 @model AssetManagement.Areas.Assets.Pages.Manage.EditModel
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<h1>Edit Asset</h1>
+<h3>Edit Asset</h3>
 
 <form method="post">
   <div asp-validation-summary="All" class="text-danger"></div>
-  <input type="hidden" asp-for="Asset.Id" />
 
   <div class="row">
     <div class="col-md-6">
-
-      <!-- FK dropdowns -->
       <div class="mb-3">
-        <label asp-for="Asset.ZrefAssetTypeId"></label>
-        <select asp-for="Asset.ZrefAssetTypeId" asp-items="ViewBag.ZrefAssetTypeId" class="form-control"></select>
-        <span asp-validation-for="Asset.ZrefAssetTypeId" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.ZrefAssetCategoryId"></label>
-        <select asp-for="Asset.ZrefAssetCategoryId" asp-items="ViewBag.ZrefAssetCategoryId" class="form-control"></select>
-        <span asp-validation-for="Asset.ZrefAssetCategoryId" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.ZrefAssetClusterId"></label>
-        <select asp-for="Asset.ZrefAssetClusterId" asp-items="ViewBag.ZrefAssetClusterId" class="form-control"></select>
-        <span asp-validation-for="Asset.ZrefAssetClusterId" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.ZrefOwnershipTypeId"></label>
-        <select asp-for="Asset.ZrefOwnershipTypeId" asp-items="ViewBag.ZrefOwnershipTypeId" class="form-control"></select>
-        <span asp-validation-for="Asset.ZrefOwnershipTypeId" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.ZrefCertificateStatusId"></label>
-        <select asp-for="Asset.ZrefCertificateStatusId" asp-items="ViewBag.ZrefCertificateStatusId" class="form-control"></select>
-        <span asp-validation-for="Asset.ZrefCertificateStatusId" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.ZrefRightsTypeId"></label>
-        <select asp-for="Asset.ZrefRightsTypeId" asp-items="ViewBag.ZrefRightsTypeId" class="form-control"></select>
-        <span asp-validation-for="Asset.ZrefRightsTypeId" class="text-danger"></span>
-      </div>
-
-      <!-- Lokasi -->
-      <div class="mb-3">
-        <label asp-for="Asset.RegProvinceId"></label>
-        <select asp-for="Asset.RegProvinceId" asp-items="ViewBag.RegProvinceId" class="form-control"></select>
-        <span asp-validation-for="Asset.RegProvinceId" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.RegRegencyId"></label>
-        <select asp-for="Asset.RegRegencyId" asp-items="ViewBag.RegRegencyId" class="form-control"></select>
-        <span asp-validation-for="Asset.RegRegencyId" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.RegDistrictId"></label>
-        <select asp-for="Asset.RegDistrictId" asp-items="ViewBag.RegDistrictId" class="form-control"></select>
-        <span asp-validation-for="Asset.RegDistrictId" class="text-danger"></span>
-      </div>
-
-      <!-- Text/Number/Date -->
-      <div class="mb-3">
-        <label asp-for="Asset.CostCenter"></label>
-        <input asp-for="Asset.CostCenter" class="form-control" />
-        <span asp-validation-for="Asset.CostCenter" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.Village"></label>
-        <input asp-for="Asset.Village" class="form-control" />
-        <span asp-validation-for="Asset.Village" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.Description"></label>
-        <textarea asp-for="Asset.Description" class="form-control"></textarea>
-        <span asp-validation-for="Asset.Description" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.OwnerName"></label>
-        <input asp-for="Asset.OwnerName" class="form-control" />
-        <span asp-validation-for="Asset.OwnerName" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.DocumentNumber"></label>
-        <input asp-for="Asset.DocumentNumber" class="form-control" />
-        <span asp-validation-for="Asset.DocumentNumber" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.CertificateNumber"></label>
-        <input asp-for="Asset.CertificateNumber" class="form-control" />
-        <span asp-validation-for="Asset.CertificateNumber" class="text-danger"></span>
+        <label asp-for="Vm.ZRef_AssetTypeId"></label>
+        <select asp-for="Vm.ZRef_AssetTypeId" asp-items="Model.Vm.Types" class="form-control" disabled></select>
+        <input type="hidden" asp-for="Vm.ZRef_AssetTypeId" /> @* disabled tidak ter-post, jadi sembunyikan nilai *@
       </div>
 
       <div class="mb-3">
-        <label asp-for="Asset.SurfaceArea"></label>
-        <input asp-for="Asset.SurfaceArea" type="number" class="form-control" />
-        <span asp-validation-for="Asset.SurfaceArea" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.CertificateIssueDate"></label>
-        <input asp-for="Asset.CertificateIssueDate" type="date" class="form-control" />
-        <span asp-validation-for="Asset.CertificateIssueDate" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.CertificateExpiryDate"></label>
-        <input asp-for="Asset.CertificateExpiryDate" type="date" class="form-control" />
-        <span asp-validation-for="Asset.CertificateExpiryDate" class="text-danger"></span>
+        <label asp-for="Vm.ZRef_AssetCategoryId"></label>
+        <select asp-for="Vm.ZRef_AssetCategoryId" asp-items="Model.Vm.Categories" class="form-control"></select>
+        <span asp-validation-for="Vm.ZRef_AssetCategoryId" class="text-danger"></span>
       </div>
 
       <div class="mb-3">
-        <label asp-for="Asset.RightsNumber"></label>
-        <input asp-for="Asset.RightsNumber" class="form-control" />
-        <span asp-validation-for="Asset.RightsNumber" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.TaxObjectNumber"></label>
-        <input asp-for="Asset.TaxObjectNumber" class="form-control" />
-        <span asp-validation-for="Asset.TaxObjectNumber" class="text-danger"></span>
+        <label asp-for="Vm.ZRef_AssetClusterId"></label>
+        <select asp-for="Vm.ZRef_AssetClusterId" asp-items="Model.Vm.Clusters" class="form-control"></select>
+        <span asp-validation-for="Vm.ZRef_AssetClusterId" class="text-danger"></span>
       </div>
 
       <div class="mb-3">
-        <label asp-for="Asset.ValueNjop"></label>
-        <input asp-for="Asset.ValueNjop" type="number" step="0.01" class="form-control" />
-        <span asp-validation-for="Asset.ValueNjop" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.ValueAcquisition"></label>
-        <input asp-for="Asset.ValueAcquisition" type="number" step="0.01" class="form-control" />
-        <span asp-validation-for="Asset.ValueAcquisition" class="text-danger"></span>
-      </div>
-      <div class="mb-3">
-        <label asp-for="Asset.ValueBook"></label>
-        <input asp-for="Asset.ValueBook" type="number" step="0.01" class="form-control" />
-        <span asp-validation-for="Asset.ValueBook" class="text-danger"></span>
+        <label asp-for="Vm.ZRef_OwnershipTypeId"></label>
+        <select asp-for="Vm.ZRef_OwnershipTypeId" asp-items="Model.Vm.OwnershipTypes" class="form-control"></select>
+        <span asp-validation-for="Vm.ZRef_OwnershipTypeId" class="text-danger"></span>
       </div>
 
+      <div class="mb-3">
+        <label asp-for="Vm.ZRef_AssetAvailabilityId"></label>
+        <select asp-for="Vm.ZRef_AssetAvailabilityId" asp-items="Model.Vm.Availabilities" class="form-control"></select>
+        <span asp-validation-for="Vm.ZRef_AssetAvailabilityId" class="text-danger"></span>
+      </div>
+
+      <div class="mb-3">
+        <label asp-for="Vm.Reg_VillageCode"></label>
+        <select asp-for="Vm.Reg_VillageCode" asp-items="Model.Vm.Villages" class="form-control"></select>
+        <span asp-validation-for="Vm.Reg_VillageCode" class="text-danger"></span>
+      </div>
+
+      <div class="mb-3">
+        <label asp-for="Vm.CostCenter"></label>
+        <input asp-for="Vm.CostCenter" class="form-control" />
+        <span asp-validation-for="Vm.CostCenter" class="text-danger"></span>
+      </div>
+
+      <div class="mb-3">
+        <label asp-for="Vm.SAP_Number"></label>
+        <input asp-for="Vm.SAP_Number" class="form-control" />
+        <span asp-validation-for="Vm.SAP_Number" class="text-danger"></span>
+      </div>
+
+      <div class="mb-3">
+        <label asp-for="Vm.Description"></label>
+        <textarea asp-for="Vm.Description" class="form-control"></textarea>
+        <span asp-validation-for="Vm.Description" class="text-danger"></span>
+      </div>
     </div>
   </div>
 
-  <button class="btn btn-primary" type="submit">Save</button>
-  <a asp-area="Assets" asp-page="/Manage/Index" class="btn btn-secondary">Back</a>
+  @if (Model.Vm.ZRef_AssetTypeId == 1)
+  {
+      var vd = new ViewDataDictionary(ViewData);
+      vd["RightsTypes"] = Model.Vm.RightsTypes;
+      <partial name="../Partials/_LandFields" for="Vm.Land" view-data="vd" />
+  }
+
+  <button type="submit" class="btn btn-primary">Simpan</button>
+  <a asp-page="Index" class="btn btn-secondary">Back</a>
 </form>
 
-@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+@section Scripts{
+  <partial name="_ValidationScriptsPartial" />
+  <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.10.5"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 0) Normalisasi value dari server: "2000000.0000" -> "2000000"
+      document.querySelectorAll('.currency').forEach(el => {
+        let v = (el.value || '').trim();
+        if (!v) return;
+        v = v.replace(/\s/g,'');
+        if (/[.,]/.test(v)) {
+          v = v.replace(/\./g,'').replace(',', '.'); // "1.234,56" / "1234.56" -> "1234.56"
+        }
+        const n = Number(v);
+        if (!Number.isNaN(n)) el.value = String(Math.round(n)); // karena decimalPlaces:0
+      });
+
+      // 1) Inisialisasi AutoNumeric
+      AutoNumeric.multiple('.currency', {
+        digitGroupSeparator: '.',
+        decimalCharacter: ',',
+        decimalPlaces: 0,              // set ke 2 kalau mau ,00
+        formatOnPageLoad: true,
+        unformatOnSubmit: true,
+        modifyValueOnWheel: false
+      });
+
+      // 2) Submit kirim angka polos
+      document.querySelector('form')?.addEventListener('submit', function () {
+        document.querySelectorAll('.currency').forEach(el => {
+          const an = AutoNumeric.getAutoNumericElement(el);
+          if (an) el.value = an.getNumber();
+        });
+      });
+    });
+  </script>
+}
+
+
+

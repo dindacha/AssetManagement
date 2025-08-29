@@ -1,117 +1,36 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AssetManagement.Models;
 
+[Table("Asset", Schema = "Asset")]
 public partial class Asset
 {
+    [Key]
     public int Id { get; set; }
 
-    [Display(Name = "Jenis Aset")]
-    public byte ZrefAssetTypeId { get; set; }
+    public byte ZRef_AssetTypeId { get; set; }
+    public byte ZRef_AssetClusterId { get; set; }
+    public byte ZRef_AssetCategoryId { get; set; }
 
-    [Display(Name = "Cluster")]
-    public byte ZrefAssetClusterId { get; set; }
+    // master lokasi yg baru: pakai kode desa
+    public string Reg_VillageCode { get; set; } = null!;
 
-    [Display(Name = "Kategori")]
+    public string CostCenter { get; set; } = null!;
+    public string? Description { get; set; }
 
-    public byte ZrefAssetCategoryId { get; set; }
+    public byte ZRef_OwnershipTypeId { get; set; }
+    public byte ZRef_AssetAvailabilityId { get; set; }
+    public string? SAP_Number { get; set; }
 
-    [Display(Name = "Jenis Kepemilikan")]
-
-    public byte ZrefOwnershipTypeId { get; set; }
-
-    [Display(Name = "Status Sertifikat")]
-
-    public byte ZrefCertificateStatusId { get; set; }
-
-    [Display(Name = "Jenis Alas Hak")]
-
-    public byte ZrefRightsTypeId { get; set; }
-
-    [Display(Name = "Provinsi")]
-
-    public int RegProvinceId { get; set; }
-    
-    [Display(Name = "Kab/Kota")]
-
-    public int RegRegencyId { get; set; }
-
-    [Display(Name = "Kecamatan")]
-
-    public int RegDistrictId { get; set; }
-
-    // Wajib teks/angka/tanggal (NOT NULL)
-
-    [Display(Name = "Cost Center")]
-
-    public string CostCenter { get; set; } = string.Empty;
-
-    [Display(Name = "Desa")]
-
-    public string Village { get; set; } = string.Empty;
-
-    [Display(Name = "Deskripsi")]
-    public string Description { get; set; } = string.Empty;
-
-    [Display(Name = "Nama Pemilik Sertifikat")]
-    public string OwnerName { get; set; } = string.Empty;
-
-    [Display(Name = "No Dokumen")]
-    public string DocumentNumber { get; set; } = string.Empty;
-
-    [Display(Name = "No Sertifikat")]
-
-    public string CertificateNumber { get; set; } = string.Empty;
-    
-    [Display(Name = "Luas Tanah")]
-
-    public int SurfaceArea { get; set; }
-
-    [Display(Name = "Tanggal Terbit Sertifikat")]
-    public DateOnly CertificateIssueDate { get; set; }
-
-    [Display(Name = "Tanggal Expired Sertifikat")]
-    public DateOnly CertificateExpiryDate { get; set; }
-
-    [Display(Name = "No Hak Alas")]
-
-    public string RightsNumber { get; set; } = string.Empty;
-
-    [Display(Name = "NOP")]
-
-    public string TaxObjectNumber { get; set; } = string.Empty;
-
-    [Display(Name = "NJOP")]
-
-    public decimal ValueNjop { get; set; }      
-
-    [Display(Name = "Nilai Akuisisi")]
-
-    public decimal ValueAcquisition { get; set; }  
-
-    [Display(Name = "Nilai Buku")]
-
-    public decimal ValueBook { get; set; }
-
-    // Nullable only for these 3 (sesuai DB)
-    [NotMapped]
-    public decimal? MapLatitude { get; set; }
-    [NotMapped]
-    public decimal? MapLongitude { get; set; }
-    
-    [NotMapped]
-    public object? MapPolygon { get; set; } 
-
-    public virtual RegDistrict?           RegDistrict { get; set; }
-    public virtual RegProvince?           RegProvince { get; set; }
-    public virtual RegRegency?            RegRegency { get; set; }
-    public virtual ZrefAssetCategory?     ZrefAssetCategory { get; set; }
-    public virtual ZrefAssetCluster?      ZrefAssetCluster { get; set; }
-    public virtual ZrefAssetType?         ZrefAssetType { get; set; }
-    public virtual ZrefCertificateStatus? ZrefCertificateStatus { get; set; }
-    public virtual ZrefOwnershipType?     ZrefOwnershipType { get; set; }
-    public virtual ZrefRightsType?        ZrefRightsType { get; set; }
+    // ===== Navigations =====
+    public virtual ZRef_AssetAvailability ZRef_AssetAvailability { get; set; } = null!;
+    public virtual ZRef_AssetCategory     ZRef_AssetCategory     { get; set; } = null!;
+    public virtual ZRef_AssetCluster      ZRef_AssetCluster      { get; set; } = null!;
+    public virtual ZRef_AssetType         ZRef_AssetType         { get; set; } = null!;
+    public virtual ZRef_OwnershipType     ZRef_OwnershipType     { get; set; } = null!;
+    public virtual Reg_Village            Reg_VillageCodeNavigation { get; set; } = null!;
+    public virtual AssetLand?             AssetLand { get; set; }
+    public virtual ICollection<AssetLandDoc> AssetLandDocs { get; set; } = new List<AssetLandDoc>();
 }

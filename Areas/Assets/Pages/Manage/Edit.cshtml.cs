@@ -1,70 +1,145 @@
+using AssetManagement.Areas.Assets.ViewModels;
 using AssetManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace AssetManagement.Areas.Assets.Pages.Manage;
-
-public class EditModel(AppDbContext db) : PageModel
+namespace AssetManagement.Areas.Assets.Pages.Manage
 {
-    private readonly AppDbContext _db = db;
-
-    [BindProperty] public Asset? Asset { get; set; }
-
-    private void LoadLookups()
+    public class EditModel : PageModel
     {
-        ViewData["ZrefAssetTypeId"]         = new SelectList(_db.ZrefAssetTypes.AsNoTracking(), "Id", "Name", Asset?.ZrefAssetTypeId);
-        ViewData["ZrefAssetClusterId"]      = new SelectList(_db.ZrefAssetClusters.AsNoTracking(), "Id", "Name", Asset?.ZrefAssetClusterId);
-        ViewData["ZrefAssetCategoryId"]     = new SelectList(_db.ZrefAssetCategories.AsNoTracking(), "Id", "Name", Asset?.ZrefAssetCategoryId);
-        ViewData["ZrefOwnershipTypeId"]     = new SelectList(_db.ZrefOwnershipTypes.AsNoTracking(), "Id", "Name", Asset?.ZrefOwnershipTypeId);
-        ViewData["ZrefCertificateStatusId"] = new SelectList(_db.ZrefCertificateStatuses.AsNoTracking(), "Id", "Name", Asset?.ZrefCertificateStatusId);
-        ViewData["ZrefRightsTypeId"]        = new SelectList(_db.ZrefRightsTypes.AsNoTracking(), "Id", "Name", Asset?.ZrefRightsTypeId);
+        private readonly AppDbContext _db;
+        public EditModel(AppDbContext db) => _db = db;
 
-        ViewData["RegProvinceId"] = new SelectList(_db.RegProvinces.AsNoTracking(), "Id", "Name", Asset?.RegProvinceId);
-        ViewData["RegRegencyId"]  = new SelectList(_db.RegRegencies.AsNoTracking(), "Id", "Name", Asset?.RegRegencyId);
-        ViewData["RegDistrictId"] = new SelectList(_db.RegDistricts.AsNoTracking(), "Id", "Name", Asset?.RegDistrictId);
-    }
+        [BindProperty] public AssetUpsertVm Vm { get; set; } = new();
+        public int AssetId { get; private set; }
 
-    public async Task<IActionResult> OnGetAsync(int id)
-    {
-        var asset = await _db.Assets.FindAsync(id);
-        if (asset is null) return NotFound();
-
-        Asset = asset;
-        LoadLookups();
-        return Page();
-    }
-
-    public async Task<IActionResult> OnPostAsync()
-    {
-        if (!ModelState.IsValid)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            LoadLookups();
+            AssetId = id;
+
+            var a = await _db.Assets
+                .AsNoTracking()
+                .Include(x => x.AssetLand)            // muat detail tanah
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (a == null) return NotFound();
+
+            // Inisialisasi VM (Land tidak boleh null)
+            Vm = new AssetUpsertVm
+            {
+                ZRef_AssetTypeId         = a.ZRef_AssetTypeId,
+                ZRef_AssetClusterId      = a.ZRef_AssetClusterId,
+                ZRef_AssetCategoryId     = a.ZRef_AssetCategoryId,
+                Reg_VillageCode          = a.Reg_VillageCode,
+                CostCenter               = a.CostCenter,
+                Description              = a.Description,
+                ZRef_OwnershipTypeId     = a.ZRef_OwnershipTypeId,
+                ZRef_AssetAvailabilityId = a.ZRef_AssetAvailabilityId,
+                SAP_Number               = a.SAP_Number,
+                Land                     = new AssetLandFieldsVm()
+            };
+
+            if (a.ZRef_AssetTypeId == 1 && a.AssetLand != null)
+            {
+                Vm.Land.SurfaceArea          = a.AssetLand.SurfaceArea;
+                Vm.Land.ZRef_RightsTypeId    = a.AssetLand.ZRef_RightsTypeId;
+                Vm.Land.RightsNumber         = a.AssetLand.RightsNumber;
+                Vm.Land.TaxObjectNumber      = a.AssetLand.TaxObjectNumber;
+                Vm.Land.Value_NJOP           = a.AssetLand.Value_NJOP;
+                Vm.Land.Value_SAP            = a.AssetLand.Value_SAP;
+                Vm.Land.Value_AppraisalKJPP  = a.AssetLand.Value_AppraisalKJPP;
+            }
+
+            await LoadLookups(); // isi semua dropdown
             return Page();
         }
 
-        if (Asset is null) return BadRequest();
+        public async Task<IActionResult> OnPostAsync(int id)
+        {
+            AssetId = id;
 
-        try
-        {
-            _db.Attach(Asset).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            var exists = await _db.Assets.AnyAsync(a => a.Id == Asset.Id);
-            if (!exists) return NotFound();
-            throw;
-        }
-        catch (DbUpdateException ex)
-        {
-            var msg = ex.InnerException?.Message ?? ex.Message;
-            ModelState.AddModelError(string.Empty, $"DB error: {msg}");
-            LoadLookups();
-            return Page();
+            if (!ModelState.IsValid)
+            {
+                await LoadLookups();
+                return Page();
+            }
+
+            var asset = await _db.Assets
+                .Include(x => x.AssetLand)            // track + muat child
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (asset == null) return NotFound();
+
+            // Update kolom-kolom Asset
+            asset.ZRef_AssetClusterId      = Vm.ZRef_AssetClusterId;
+            asset.ZRef_AssetCategoryId     = Vm.ZRef_AssetCategoryId;
+            asset.Reg_VillageCode          = Vm.Reg_VillageCode!;
+            asset.CostCenter               = Vm.CostCenter!;
+            asset.Description              = Vm.Description ?? string.Empty;
+            asset.ZRef_OwnershipTypeId     = Vm.ZRef_OwnershipTypeId ?? asset.ZRef_OwnershipTypeId;
+            asset.ZRef_AssetAvailabilityId = Vm.ZRef_AssetAvailabilityId ?? asset.ZRef_AssetAvailabilityId;
+            asset.SAP_Number               = Vm.SAP_Number;
+
+            // Update detail tanah
+            if (asset.ZRef_AssetTypeId == 1)
+            {
+                if (asset.AssetLand == null)
+                {
+                    asset.AssetLand = new AssetLand { AssetId = id };
+                    _db.AssetLands.Add(asset.AssetLand);
+                }
+
+                asset.AssetLand.SurfaceArea         = Vm.Land.SurfaceArea ?? asset.AssetLand.SurfaceArea;
+                asset.AssetLand.ZRef_RightsTypeId   = Vm.Land.ZRef_RightsTypeId ?? asset.AssetLand.ZRef_RightsTypeId;
+                asset.AssetLand.RightsNumber        = Vm.Land.RightsNumber;
+                asset.AssetLand.TaxObjectNumber     = Vm.Land.TaxObjectNumber;
+                asset.AssetLand.Value_NJOP          = Vm.Land.Value_NJOP;
+                asset.AssetLand.Value_SAP           = Vm.Land.Value_SAP;
+                asset.AssetLand.Value_AppraisalKJPP = Vm.Land.Value_AppraisalKJPP;
+            }
+            else
+            {
+                if (asset.AssetLand != null)
+                    _db.AssetLands.Remove(asset.AssetLand);
+            }
+
+            try
+            {
+                await _db.SaveChangesAsync();
+                return RedirectToPage("Index");
+            }
+            catch (DbUpdateException ex)
+            {
+                ModelState.AddModelError(string.Empty, $"DB error: {ex.InnerException?.Message ?? ex.Message}");
+                await LoadLookups();
+                return Page();
+            }
         }
 
-        return RedirectToPage("Index", new { area = "Assets" });
+        private async Task LoadLookups()
+        {
+            Vm.Types = await _db.ZRef_AssetTypes.AsNoTracking()
+                .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
+
+            Vm.Clusters = await _db.ZRef_AssetClusters.AsNoTracking()
+                .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
+
+            Vm.Categories = await _db.ZRef_AssetCategories.AsNoTracking()
+                .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
+
+            Vm.OwnershipTypes = await _db.ZRef_OwnershipTypes.AsNoTracking()
+                .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
+
+            Vm.Availabilities = await _db.ZRef_AssetAvailabilities.AsNoTracking()
+                .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
+
+            Vm.RightsTypes = await _db.ZRef_RightsTypes.AsNoTracking()
+                .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToListAsync();
+
+            Vm.Villages = await _db.Reg_Villages.AsNoTracking()
+                .Select(x => new SelectListItem { Value = x.Code, Text = x.Name }).ToListAsync();
+        }
     }
 }

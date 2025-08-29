@@ -5,23 +5,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AssetManagement.Areas.Assets.Pages.Manage;
 
-public class DetailsModel(AppDbContext db) : PageModel
+
+
+public class DetailsModel : PageModel
 {
-    private readonly AppDbContext _db = db;
-    public Asset? Asset { get; private set; }
+    private readonly AppDbContext _db;
+    public DetailsModel(AppDbContext db) => _db = db;
+
+    public Asset? AssetItem { get; private set; }
+    public AssetLand? Land { get; private set; }
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        Asset = await _db.Assets
-            .Include(a => a.ZrefAssetType)
-            .Include(a => a.ZrefAssetCategory)
-            .Include(a => a.ZrefAssetCluster)
-            .Include(a => a.ZrefOwnershipType)
-            .Include(a => a.RegProvince)
-            .Include(a => a.RegRegency)
-            .Include(a => a.RegDistrict)
+        AssetItem = await _db.Assets.AsNoTracking()
+            .Include(a => a.ZRef_AssetType)
+            .Include(a => a.ZRef_AssetCluster)
+            .Include(a => a.ZRef_AssetCategory)
+            .Include(a => a.ZRef_OwnershipType)
+            .Include(a => a.ZRef_AssetAvailability)
+            .Include(a => a.Reg_VillageCodeNavigation)
             .FirstOrDefaultAsync(a => a.Id == id);
 
-        return Asset is null ? NotFound() : Page();
+        if (AssetItem == null) return NotFound();
+
+        if (AssetItem.ZRef_AssetTypeId == 1)
+        {
+            Land = await _db.AssetLands.AsNoTracking()
+                .FirstOrDefaultAsync(l => l.AssetId == id);
+        }
+
+        return Page();
     }
 }

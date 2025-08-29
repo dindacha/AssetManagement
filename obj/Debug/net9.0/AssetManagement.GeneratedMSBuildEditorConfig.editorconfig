@@ -48,6 +48,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQXNzZXRzXFBhZ2VzXE1hbmFnZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/REPOSITORY/AssetManagement/Areas/Assets/Pages/Partials/_BuildingFields.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQXNzZXRzXFBhZ2VzXFBhcnRpYWxzXF9CdWlsZGluZ0ZpZWxkcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/REPOSITORY/AssetManagement/Areas/Assets/Pages/Partials/_LandFields.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQXNzZXRzXFBhZ2VzXFBhcnRpYWxzXF9MYW5kRmllbGRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/REPOSITORY/AssetManagement/Areas/Assets/Pages/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQXNzZXRzXFBhZ2VzXF9WaWV3SW1wb3J0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

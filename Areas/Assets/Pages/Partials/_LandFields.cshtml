@@ -1,0 +1,51 @@
+@model AssetLandFieldsVm
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+<div class="mb-3">
+<label asp-for="SurfaceArea"></label>
+<input asp-for="SurfaceArea" type="number" step="1" class="form-control" />
+<span asp-validation-for="SurfaceArea" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+<label asp-for="ZRef_RightsTypeId"></label>
+<select asp-for="ZRef_RightsTypeId"
+        asp-items="@(ViewData["RightsTypes"] as IEnumerable<SelectListItem>)"
+        class="form-control"></select>
+<span asp-validation-for="ZRef_RightsTypeId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+<label asp-for="RightsNumber"></label>
+<input asp-for="RightsNumber" class="form-control" />
+<span asp-validation-for="RightsNumber" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+<label asp-for="TaxObjectNumber"></label>
+<input asp-for="TaxObjectNumber" class="form-control" />
+<span asp-validation-for="TaxObjectNumber" class="text-danger"></span>
+</div>
+
+<div class="col-md-4">
+  <label asp-for="Value_NJOP"></label>
+  <input asp-for="Value_NJOP" type="text" asp-format="{0:0}"
+         inputmode="numeric" class="form-control currency" />
+  <span asp-validation-for="Value_NJOP" class="text-danger"></span>
+</div>
+
+<div class="col-md-4">
+  <label asp-for="Value_SAP"></label>
+  <input asp-for="Value_SAP" type="text" asp-format="{0:0}"
+         inputmode="numeric" class="form-control currency" />
+  <span asp-validation-for="Value_SAP" class="text-danger"></span>
+</div>
+
+
+<div class="col-md-4">
+  <label asp-for="Value_AppraisalKJPP"></label>
+  <input asp-for="Value_AppraisalKJPP" class="form-control" />
+  <span asp-validation-for="Value_AppraisalKJPP" class="text-danger"></span>
+</div>
+
+
